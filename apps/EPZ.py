@@ -35,13 +35,20 @@ def app():
     st.header("Velg studieområde")
     lat = st.number_input('Lengdegrad', value = 60.3925)
     long = st.number_input('Breddegrad', value = 5.3233)
-    st.header("Scenariobygger")
     scenario = st.radio('Velg scenario', options=['1', '2', '3', '4', '5'], horizontal=True)
+    st.header("Scenariobygger")
+    st.subheader("1) Plasser ut bygg")
+    st.write("Bruk knappene til venstre")
     m = leafmap.Map(locate_control=True, center=[lat, long], zoom=17, Draw_export = True)
     m.add_basemap("ROADMAP")
     output = st_folium(m, key="init", width=1000, height=600)
 
+    st.subheader("2) Gi byggene attributter")
     for i in range(0, len(output["all_drawings"])):
+        st.write(f"Bygg {i}")
+        output["all_drawings"][i]["properties"]["id"] = i
+        output["all_drawings"][i]["properties"]["area"] = st.number_input("Bruttoareal (BRA)", value=150, step=10, key=f"area_{i}")
+        output["all_drawings"][i]["properties"]["standard"] = st.selectbox("Velg energistandard", options=["Nytt", "Gammelt"], key=f"standard_{i}")
         st.write(output["all_drawings"][i])
     
     st.header("Energibehov")
