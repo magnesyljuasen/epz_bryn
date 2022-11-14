@@ -2,8 +2,10 @@
 geemap
 geopandas
 jupyter-server-proxy
+keplergl
 leafmap
+localtileserver
 nbserverproxy
-owslib
 streamlit
+streamlit-option-menu
 
