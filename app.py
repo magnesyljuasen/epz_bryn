@@ -10,8 +10,8 @@ with open("src/styles/main.css") as f:
 st.title("Energy Plan Zero")
 st.header("Velg studieområde")
 st.caption("TO DO: Avgrens område med et polygon")
-#input_obj = input.Input()
+input_obj = input.Input()
 st.title("Scenariobygger")
 
-#EPZ.app(input_obj.lat, input_obj.long)
-EPZ.app(60.3925, 5.3233)
+EPZ.app(input_obj.lat, input_obj.long)
+#EPZ.app(60.3925, 5.3233)
