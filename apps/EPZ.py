@@ -4,6 +4,7 @@ from streamlit_folium import st_folium
 import folium
 from typing import List
 from folium.plugins import Draw
+import pandas as pd
 
 
 def show_map(center: List[float], zoom: int) -> folium.Map:
@@ -30,32 +31,54 @@ def show_map(center: List[float], zoom: int) -> folium.Map:
     return m
 
 
-def app():
-    st.title("Energy Plan Zero")
-    st.header("Velg studieområde")
-    lat = st.number_input('Lengdegrad', value = 60.3925)
-    long = st.number_input('Breddegrad', value = 5.3233)
-    scenario = st.radio('Velg scenario', options=['1', '2', '3', '4', '5'], horizontal=True)
+def app(lat, long):
     st.header("Scenariobygger")
-    st.subheader("1) Plasser ut bygg")
-    st.write("Bruk knappene til venstre")
-    m = leafmap.Map(locate_control=True, center=[lat, long], zoom=17, Draw_export = True)
+    st.subheader("*1) Plasser ut bygg*")
+    st.write("Bruk knappene til venstre i kartet")
+    m = leafmap.Map(locate_control=True, center=[lat, long], zoom=17)
     m.add_basemap("ROADMAP")
     output = st_folium(m, key="init", width=1000, height=600)
 
-    st.subheader("2) Gi byggene attributter")
-    for i in range(0, len(output["all_drawings"])):
-        st.write(f"Bygg {i}")
-        output["all_drawings"][i]["properties"]["id"] = i
-        output["all_drawings"][i]["properties"]["area"] = st.number_input("Bruttoareal (BRA)", value=150, step=10, key=f"area_{i}")
-        output["all_drawings"][i]["properties"]["standard"] = st.selectbox("Velg energistandard", options=["Nytt", "Gammelt"], key=f"standard_{i}")
-        st.write(output["all_drawings"][i])
     
-    st.header("Energibehov")
+    if output["all_drawings"] != None:
+        with st.sidebar:
+            st.subheader("*2) Gi byggene attributter*")
+            st.caption("TO DO: Kan gjøres mer brukervennlig med last_clicked")
+            for i in range(0, len(output["all_drawings"])):
+                with st.expander(f"Bygg {i+1}"):
+                    path = output["all_drawings"][i]["properties"]
+                    path["name"] = st.text_input("Navn", value=f"Bygg {i+1}")
+                    path["area"] = st.number_input("BRA", value=150, step=10, key=f"area_{i}")
+                    path["standard"] = st.selectbox("Energistandard", options=["Nytt", "Gammelt"], key=f"standard_{i}")
+                    path["category"] = st.selectbox("Kategori", options=["Hus", "Skole", "Barnehage"], key=f"category_{i}")
+                    st.markdown("---")
 
-    #m = show_map(center=[lat,long], zoom=17)
-    #output = st_folium(m, key="init", width=1000, height=600)
-    #st.write(output)
+        with st.sidebar:
+            st.markdown("---")
+            with st.expander("Se bygningstabell"):
+                st.caption("TO DO: tabell -> spatial dataframe")
+                i_list = []
+                name_list = []
+                area_list = []
+                standard_list = []
+                category_list = []
+                for i in range(0, len(output["all_drawings"])):
+                    # for hvert bygg
+                    path = output["all_drawings"][i]["properties"]
+                    i_list.append(i)
+                    name_list.append(path["name"])
+                    area_list.append(path["area"])
+                    standard_list.append(path["standard"])
+                    category_list.append(path["category"])
+                
+                df = pd.DataFrame(data={'ID' : i_list, 'Navn' : name_list, 'Areal' : area_list, 'Standard' : standard_list, 'Kategori' : category_list})
+
+                st.write(df)
+
+    if st.checkbox("Gå videre"):
+        st.header("*2) Energibehov*")
+        st.write("Verktøyet beregner nå energibehov for alle byggene")
+
 
 
 
