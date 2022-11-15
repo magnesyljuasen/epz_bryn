@@ -107,45 +107,20 @@ def app(lat, long):
                 space_heating_arr_sum = 0
                 dhw_arr_sum = 0
                 for i in range(0, len(df)):
-                    if scenario_list[i] == "1":
-                        # beregne energibehov
-                        demand_obj = demand.Demand()
-                        demand_obj.from_file(area_list[i], temperature_obj.id)
-                        demand_obj.update()
-                        
-                        with st.expander(f"{name_list[i]}"):
-                            st.write(f"**Romoppvarming**, {int(np.sum(demand_obj.space_heating_arr))} kWh")
-                            st.line_chart(demand_obj.space_heating_arr)
+                    # beregne energibehov
+                    demand_obj = demand.Demand()
+                    demand_obj.from_file(area_list[i], temperature_obj.id)
+                    demand_obj.update()
+                    
+                    with st.expander(f"{name_list[i]}"):
+                        st.write(f"**Romoppvarming**, {int(np.sum(demand_obj.space_heating_arr))} kWh")
+                        st.line_chart(demand_obj.space_heating_arr)
 
-                            st.write(f"**Tappevann**, {int(np.sum(demand_obj.dhw_arr))} kWh")
-                            st.line_chart(demand_obj.dhw_arr)
+                        st.write(f"**Tappevann**, {int(np.sum(demand_obj.dhw_arr))} kWh")
+                        st.line_chart(demand_obj.dhw_arr)
 
-                            st.write(f"**Termisk behov**, {int(np.sum(demand_obj.space_heating_arr + demand_obj.dhw_arr).flatten())} kWh")
-                            thermal_arr = (demand_obj.space_heating_arr + demand_obj.dhw_arr).flatten()
-                            st.line_chart(thermal_arr)
-
-                            st.write(f"**Termisk behov, varighetskurve**")
-                            st.line_chart(np.sort(thermal_arr.flatten())[::-1])
-
-                            st.write("**Verdier**")
-                            st.write(f"Maks effekt {int(max(thermal_arr))} kW")
-
-                            download_array(thermal_arr, f"termisk_energibehov_{name_list[i]}")
-
-                        space_heating_arr_sum += demand_obj.space_heating_arr
-                        dhw_arr_sum += demand_obj.dhw_arr
-
-
-                    st.markdown("---")
-                    with st.expander("Samlet energibehov for alle bygg", expanded=True):
-                        st.write(f"**Romoppvarming**, {int(np.sum(space_heating_arr_sum))} kWh")
-                        st.line_chart(space_heating_arr_sum)
-
-                        st.write(f"**Tappevann**, {int(np.sum(dhw_arr_sum))} kWh")
-                        st.line_chart(dhw_arr_sum)
-
-                        st.write(f"**Termisk behov**, {int(np.sum(space_heating_arr_sum + dhw_arr_sum).flatten())} kWh")
-                        thermal_arr = (space_heating_arr_sum + dhw_arr_sum).flatten()
+                        st.write(f"**Termisk behov**, {int(np.sum(demand_obj.space_heating_arr + demand_obj.dhw_arr).flatten())} kWh")
+                        thermal_arr = (demand_obj.space_heating_arr + demand_obj.dhw_arr).flatten()
                         st.line_chart(thermal_arr)
 
                         st.write(f"**Termisk behov, varighetskurve**")
@@ -154,21 +129,45 @@ def app(lat, long):
                         st.write("**Verdier**")
                         st.write(f"Maks effekt {int(max(thermal_arr))} kW")
 
-                        download_array(thermal_arr, f"termisk_energibehov_alle_bygg")
+                        download_array(thermal_arr, f"termisk_energibehov_{name_list[i]}")
 
-                    st.markdown("---")
-                    st.header("*3) Grunnvarmepotensial*")
+                    space_heating_arr_sum += demand_obj.space_heating_arr
+                    dhw_arr_sum += demand_obj.dhw_arr
 
-                    adjust_obj = adjust.Adjust(1.5, int(np.sum(space_heating_arr_sum)), int(np.sum(dhw_arr_sum)), 10, 5, 3.0, dhw_arr_sum, space_heating_arr_sum)
-                    if adjust_obj.start == True:
-                        geoenergy_obj = geoenergy.Geoenergy((adjust_obj.dhw_arr + adjust_obj.space_heating_arr), 
-                            temperature_obj.average_temperature, adjust_obj.cop, adjust_obj.thermal_conductivity, 
-                            adjust_obj.groundwater_table, adjust_obj.energycoverage)
 
-                    #st.header("*4) Solenergipotensial*")
-                    #st.write("...")
+                st.markdown("---")
+                with st.expander("Samlet energibehov for alle bygg", expanded=True):
+                    st.write(f"**Romoppvarming**, {int(np.sum(space_heating_arr_sum))} kWh")
+                    st.line_chart(space_heating_arr_sum)
 
-                    #st.header("*5) Sammenstilt behov og produksjon")
+                    st.write(f"**Tappevann**, {int(np.sum(dhw_arr_sum))} kWh")
+                    st.line_chart(dhw_arr_sum)
+
+                    st.write(f"**Termisk behov**, {int(np.sum(space_heating_arr_sum + dhw_arr_sum).flatten())} kWh")
+                    thermal_arr = (space_heating_arr_sum + dhw_arr_sum).flatten()
+                    st.line_chart(thermal_arr)
+
+                    st.write(f"**Termisk behov, varighetskurve**")
+                    st.line_chart(np.sort(thermal_arr.flatten())[::-1])
+
+                    st.write("**Verdier**")
+                    st.write(f"Maks effekt {int(max(thermal_arr))} kW")
+
+                    download_array(thermal_arr, f"termisk_energibehov_alle_bygg")
+
+                st.markdown("---")
+                st.header("*3) Grunnvarmepotensial*")
+
+                adjust_obj = adjust.Adjust(1.5, int(np.sum(space_heating_arr_sum)), int(np.sum(dhw_arr_sum)), 10, 5, 3.0, dhw_arr_sum, space_heating_arr_sum)
+                if adjust_obj.start == True:
+                    geoenergy_obj = geoenergy.Geoenergy((adjust_obj.dhw_arr + adjust_obj.space_heating_arr), 
+                        temperature_obj.average_temperature, adjust_obj.cop, adjust_obj.thermal_conductivity, 
+                        adjust_obj.groundwater_table, adjust_obj.energycoverage)
+
+                #st.header("*4) Solenergipotensial*")
+                #st.write("...")
+
+                #st.header("*5) Sammenstilt behov og produksjon")
 
 
 
