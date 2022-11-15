@@ -155,14 +155,14 @@ def app(lat, long):
 
                     download_array(thermal_arr, f"termisk_energibehov_alle_bygg")
 
-                st.markdown("---")
-                st.header("*3) Grunnvarmepotensial*")
+                #st.markdown("---")
+                #st.header("*3) Grunnvarmepotensial*")
 
-                adjust_obj = adjust.Adjust(1.5, int(np.sum(space_heating_arr_sum)), int(np.sum(dhw_arr_sum)), 10, 5, 3.0, dhw_arr_sum, space_heating_arr_sum)
-                if adjust_obj.start == True:
-                    geoenergy_obj = geoenergy.Geoenergy((adjust_obj.dhw_arr + adjust_obj.space_heating_arr), 
-                        temperature_obj.average_temperature, adjust_obj.cop, adjust_obj.thermal_conductivity, 
-                        adjust_obj.groundwater_table, adjust_obj.energycoverage)
+                #adjust_obj = adjust.Adjust(1.5, int(np.sum(space_heating_arr_sum)), int(np.sum(dhw_arr_sum)), 10, 5, 3.0, dhw_arr_sum, space_heating_arr_sum)
+                #if adjust_obj.start == True:
+                #    geoenergy_obj = geoenergy.Geoenergy((adjust_obj.dhw_arr + adjust_obj.space_heating_arr), 
+                #        temperature_obj.average_temperature, adjust_obj.cop, adjust_obj.thermal_conductivity, 
+                #        adjust_obj.groundwater_table, adjust_obj.energycoverage)
 
                 #st.header("*4) Solenergipotensial*")
                 #st.write("...")
