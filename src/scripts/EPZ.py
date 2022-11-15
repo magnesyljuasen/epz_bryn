@@ -32,7 +32,6 @@ def show_map(center: List[float], zoom: int) -> folium.Map:
 
 
 def app(lat, long):
-    st.header("Scenariobygger")
     st.subheader("*1) Plasser ut bygg*")
     st.write("Bruk knappene til venstre i kartet")
     m = leafmap.Map(locate_control=True, center=[lat, long], zoom=17)
@@ -43,7 +42,7 @@ def app(lat, long):
     if output["all_drawings"] != None:
         with st.sidebar:
             st.subheader("*2) Gi byggene attributter*")
-            st.caption("TO DO: Kan gjøres mer brukervennlig med last_clicked")
+            st.caption("TO DO: Kan gjøres mer brukervennlig med last_clicked og shape_area som placeholder_verdi på bygg. Aktiv st_expander kan holdes åpen, resten lukket.")
             for i in range(0, len(output["all_drawings"])):
                 with st.expander(f"Bygg {i+1}"):
                     path = output["all_drawings"][i]["properties"]
