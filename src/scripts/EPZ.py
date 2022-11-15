@@ -134,8 +134,7 @@ def app(lat, long):
 
                         space_heating_arr_sum += demand_obj.space_heating_arr
                         dhw_arr_sum += demand_obj.dhw_arr
-                    else:
-                        break
+
 
                     st.markdown("---")
                     with st.expander("Samlet energibehov for alle bygg", expanded=True):
