@@ -7,7 +7,6 @@ class Input:
     def __init__(self):
         selected_adr, selected_lat, selected_long, selected_postcode = self.address_input()
         if selected_adr != 0:
-            self.area_input()
             self.adr = selected_adr
             self.lat = selected_lat
             self.long = selected_long
@@ -33,10 +32,9 @@ class Input:
         return options_list, lat_list, long_list, postnummer_list
     
     def address_input(self):
-        st.title("Hvor befinner boligen seg?")
         adr = st_keyup("📍 Skriv inn adresse", key="adresse1")
         if len(adr) == 0:
-            st.write('FORSIDE')
+            st.stop()
         options_list, lat_list, long_list, postcode_list = self.address_search(adr)
         c1, c2 = st.columns(2)
         if len(options_list) == 0:
@@ -81,18 +79,4 @@ class Input:
                 st.stop()
             return selected_adr, selected_lat, selected_long, selected_postcode
 
-    def area_input(self):
-        st.title("Hvor stor er boligen?")
-        selected_area = st_keyup(f"🏠 Tast inn oppvarmet boligareal [m\u00B2]", key="areal2")
-        if len(selected_area) == 0:
-            st.markdown('---')
-            st.stop()
-        else:
-            if not selected_area.isnumeric():
-                st.error("Input må være tall!", icon="🚨")
-                st.markdown("---")
-            elif len(selected_area) > 0 and int(selected_area) < 100 or int(selected_area) > 500:
-                time.sleep(2)
-                st.error("Oppvarmet boligareal må være mellom 100 og 500 m\u00b2", icon="🚨")
-            elif len(selected_area) > 0 and int(selected_area) >= 100 and int(selected_area) <= 500:
-                self.area = int(selected_area)
+

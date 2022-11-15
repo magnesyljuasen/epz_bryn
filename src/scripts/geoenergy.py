@@ -236,8 +236,8 @@ class Geoenergy:
     def wellnumber_calculation(self):
         meters = self.meter
         bronnlengde = 0
-        for i in range(1,10):
-            bronnlengde += 350
+        for i in range(1,300):
+            bronnlengde += 300
             if meters <= bronnlengde:
                 self.number_of_wells = i
                 return

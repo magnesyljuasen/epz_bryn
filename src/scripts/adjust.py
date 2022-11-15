@@ -64,10 +64,10 @@ class Adjust:
         self.energycoverage = st.number_input('Velg energidekningsgrad [%]', min_value=80, value=95, max_value=100)
 
     def spaceheating_f(self):
-        self.space_heating_sum = st.number_input('Juster romoppvarmingsbehov [kWh]', min_value=0, value=self.space_heating_old, max_value=100000, step=1000)
+        self.space_heating_sum = st.number_input('Juster romoppvarmingsbehov [kWh]', min_value=0, value=self.space_heating_old, max_value=100000000, step=1000)
 
     def dhw_f(self):
-        self.dhw_sum = st.number_input('Juster tappevannsbehov [kWh]', min_value=0, value=self.dhw_old, max_value=100000, step=1000)
+        self.dhw_sum = st.number_input('Juster tappevannsbehov [kWh]', min_value=0, value=self.dhw_old, max_value=100000000, step=1000)
 
     def depth_to_bedrock_f(self):
         self.depth_to_bedrock = st.number_input('Dybde til fjell [m]', min_value=0, value=self.depth_to_bedrock, max_value=100, 
