@@ -7,6 +7,7 @@ from folium.plugins import Draw
 import pandas as pd
 import numpy as np
 import io
+import geopandas
 from src.scripts import input, adjust, temperature, demand, geology, geoenergy, environment, costs
 
 def download_array(arr, name):
@@ -27,8 +28,7 @@ def show_map(center: List[float], zoom: int) -> folium.Map:
         location=center,
         zoom_start=zoom,
         control_scale=True,
-        tiles="https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
-        attr='Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',  # noqa: E501
+        tiles="openstreetmap",
     )
     Draw(
         export=False,
@@ -37,10 +37,10 @@ def show_map(center: List[float], zoom: int) -> folium.Map:
             "polyline": False,
             "poly": False,
             "circle": False,
-            "polygon": False,
+            "polygon": True,
             "marker": False,
             "circlemarker": False,
-            "rectangle": True,
+            "rectangle": False,
         },
     ).add_to(m)
     return m
@@ -48,9 +48,33 @@ def show_map(center: List[float], zoom: int) -> folium.Map:
 def app(lat, long):
     st.subheader("*1) Plasser ut bygg*")
     st.write("Bruk knappene til venstre i kartet")
-    m = leafmap.Map(locate_control=True, center=[lat, long], zoom=17)
-    m.add_basemap("ROADMAP")
-    output = st_folium(m, key="init", width=1000, height=600)
+    #m = leafmap.Map(locate_control=True, center=[lat, long], zoom=17)
+    #m.add_basemap("ROADMAP")
+    m = show_map(center=[lat, long], zoom=17)
+
+    #counties_gdf = geopandas.read_file('https://storage.googleapis.com/co-publicdata/lm_cnty.zip')
+    #folium.GeoJson(data=counties_gdf["geometry"]).add_to(m)
+
+    st.caption("Mulighet til å legge inn mange flere lag")
+    selected_url = 'https://geo.ngu.no/mapserver/LosmasserWMS?request=GetCapabilities&service=WMS'
+    selected_layer = 'Losmasse_flate'
+
+    folium.raster_layers.WmsTileLayer(url = selected_url,
+        layers = selected_layer,
+        transparent = True, 
+        control = True,
+        fmt="image/png",
+        name = 'Løsmasser',
+        overlay = True,
+        show = False,
+        CRS = 'EPSG:900913',
+        version = '1.3.0',
+        ).add_to(m)
+
+
+    folium.LayerControl().add_to(m)
+        
+    output = st_folium(m, width=700, height=600)
 
     
     if output["all_drawings"] != None:
