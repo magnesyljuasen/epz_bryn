@@ -7,7 +7,7 @@ from folium.plugins import Draw
 import pandas as pd
 import numpy as np
 import io
-import geopandas
+#import geopandas
 from src.scripts import input, adjust, temperature, demand, geology, geoenergy, environment, costs
 
 def download_array(arr, name):
