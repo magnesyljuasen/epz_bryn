@@ -150,7 +150,6 @@ def app(lat, long):
     df = pd.DataFrame(data={'ID' : buildings_df['ID'], 'Areal' : buildings_df['BRA'], 'Standard' : buildings_df['Standard'], 'Kategori' : buildings_df['Kategori']})
 
     # -- Beregne energibehov --
-    st.info("Her kan du starte energiberegning for bygningsmassen.")
     if st.checkbox("Start beregning"):
         st.header("*2) Energibehov*")
         #tab1, tab2, tab3 = st.tabs(["Scenario 1", "Scenario 2", "Scenario 3"])
