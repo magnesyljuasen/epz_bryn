@@ -22,7 +22,7 @@ class Geoenergy:
         self.thermal_conductivity = thermal_conductivity
         self.groundwater_table = groundwater_table
         self.demand_calculation()
-        self.pygfunction_calculation([60, 70, 80, 90, 100, 110], 3, 2)
+        self.pygfunction_calculation([60, 70, 80, 90, 100, 110], 2, 2)
         self.wellnumber_calculation()
         self.show_results()
 

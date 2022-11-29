@@ -87,11 +87,11 @@ def app(lat, long):
                     path["name"] = st.text_input("Navn", value=f"Bygg {i+1}")
                     path["area"] = st.number_input("BRA", value=150, step=10, key=f"area_{i}")
                     path["scenario"] = st.selectbox("Scenario", options=["1", "2", "3", "4", "5"], key=f"scenario_{i}")
+                    st.caption("Parametere for solenergi")
                     #path["standard"] = st.selectbox("Energistandard", options=["Nytt", "Gammelt"], key=f"standard_{i}")
                     #path["category"] = st.selectbox("Kategori", options=["Hus", "Skole", "Barnehage"], key=f"category_{i}")
                     path["standard"] = 0
                     path["category"] = 0
-                    st.markdown("---")
 
         with st.sidebar:
             st.markdown("---")
@@ -179,19 +179,55 @@ def app(lat, long):
 
                     download_array(thermal_arr, f"termisk_energibehov_alle_bygg")
 
-                #st.markdown("---")
-                #st.header("*3) Grunnvarmepotensial*")
+                st.markdown("---")
+                st.header("*3) Termisk energi*")
+                st.subheader("*3.1) Grunnvarmepotensial*")
 
-                #adjust_obj = adjust.Adjust(1.5, int(np.sum(space_heating_arr_sum)), int(np.sum(dhw_arr_sum)), 10, 5, 3.0, dhw_arr_sum, space_heating_arr_sum)
-                #if adjust_obj.start == True:
-                #    geoenergy_obj = geoenergy.Geoenergy((adjust_obj.dhw_arr + adjust_obj.space_heating_arr), 
-                #        temperature_obj.average_temperature, adjust_obj.cop, adjust_obj.thermal_conductivity, 
-                #        adjust_obj.groundwater_table, adjust_obj.energycoverage)
+                adjust_obj = adjust.Adjust(1.5, int(np.sum(space_heating_arr_sum)), int(np.sum(dhw_arr_sum)), 10, 5, 3.0, dhw_arr_sum, space_heating_arr_sum)
+                if adjust_obj.start == True:
+                    geoenergy_obj = geoenergy.Geoenergy((adjust_obj.dhw_arr + adjust_obj.space_heating_arr), 
+                        temperature_obj.average_temperature, adjust_obj.cop, adjust_obj.thermal_conductivity, 
+                        adjust_obj.groundwater_table, adjust_obj.energycoverage)
 
-                #st.header("*4) Solenergipotensial*")
-                #st.write("...")
+                st.subheader("*3.2) Sjøvannsvarmepumpe*")
+                st.write("...")
 
-                #st.header("*5) Sammenstilt behov og produksjon")
+                st.subheader("*3.3) Luft-til-luft varmepumpe*")
+                st.write("...")
+
+                st.subheader("*3.4) Fjernvarme*")
+                st.write("...")
+                st.write("Fjernvarmekapasiteten i området må være så så stor...")
+
+                st.markdown("---")
+                st.header("*4) Elektrisk energi*")
+                
+                st.subheader("*4.1) Solenergipotensial*")
+                st.write("pvgis.py")
+                st.write("...")
+
+                st.subheader("*4.2) Elektrisk nett*")
+                st.write("Hvilken kapasitet som kreves for å dekke effekttoppene")
+                st.write("...")
+
+                st.markdown("---")
+                st.header("5) Mulige løsninger - sammenstilt behov og produksjon")
+                st.subheader("*5.1) Grunnvarme og sol*")
+                st.write("- Kostnader / Lønnsomhet")
+                st.write(" - CO2")
+
+                st.subheader("*5.2) Grunnvarme og fjernvarme*")
+                st.write("- Kostnader / Lønnsomhet")
+                st.write(" - CO2")
+
+                st.subheader("*5.3) Grunnvarme og sol*")
+                st.write("- Kostnader / Lønnsomhet")
+                st.write(" - CO2")
+
+                st.subheader("*5.4) Solenergi - produksjon om sommeren*")
+                st.write("- Kostnader / Lønnsomhet")
+                st.write(" - CO2")
+
 
 
 
