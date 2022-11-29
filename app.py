@@ -12,6 +12,6 @@ st.title("Energy Plan Zero - Sluppen")
 #input_obj = input.Input()
 
 #EPZ.app(input_obj.lat, input_obj.long)
-EPZ.app(63.397647, 10.399185)
+EPZ.app(63.398337, 10.399633)
 
 

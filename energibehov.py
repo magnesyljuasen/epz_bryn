@@ -8,6 +8,9 @@ class Energibehov:
     def __init__(self):
         this_location = pathlib.Path(__file__)
         self.profet_data = pd.read_csv('src/data/Effektprofiler.csv', sep=';')
+
+    def hent_profil_2(self, bygningstype, bygningsstandard, forbrukstype, areal):
+        return areal * np.array(self.profet_data[bygningstype + bygningsstandard + forbrukstype])
         
     def hent_profil(self, bygningstype, bygningsstandard, forbrukstype, areal):
         bygningstype, bygningsstandard, forbrukstype, areal = self.input_data(bygningstype, bygningsstandard, forbrukstype, areal)

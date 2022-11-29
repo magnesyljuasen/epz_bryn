@@ -22,9 +22,10 @@ class Geoenergy:
         self.thermal_conductivity = thermal_conductivity
         self.groundwater_table = groundwater_table
         self.demand_calculation()
-        self.pygfunction_calculation([60, 70, 80, 90, 100, 110], 2, 2)
-        self.wellnumber_calculation()
-        self.show_results()
+        self.diagram()
+        #self.pygfunction_calculation([60, 70, 80, 90, 100, 110], 2, 2)
+        #self.wellnumber_calculation()
+        #self.show_results()
 
     def load(self, x, YEARS, arr):
         arr = arr * 1000
@@ -276,7 +277,7 @@ class Geoenergy:
             og ikke varmepumper med inverterstyrt kompressor.""")
 
             st.write('**Energi- og effekt**')
-            self.diagram()
+            
             st.write('**Simulert temperatur (borehullsveggen)**')
             self.borehole_temperature()
             st.caption(f""" kWh/meter {self.kWh_per_meter} og min temp {int(self.min_temperature)} grader""")
