@@ -99,7 +99,7 @@ def app(lat, long):
     with st.expander("Se 3D modell"):
         uc = '\u00B2'
         
-        image = Image.open('src\data\Arealer.png')
+        image = Image.open('src/data/Arealer.png')
 
         st.image(image, caption=f'Bygninger og bruttoareal (m{uc}) fra modell')
     
