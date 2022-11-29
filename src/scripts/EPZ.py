@@ -118,16 +118,6 @@ def app(lat, long):
 
     #-- Energibehov fra tabell --
 
-    energy_efficiency = st.selectbox("Velg energistandard for alle bygg", options=["Gammelt", "Energieffektiv (TEK10/TEK17)", "Passivhus"], index=1)
-    if energy_efficiency == "Gammelt":
-        buildings_df['Standard'][0:len(buildings_df)] = "X"
-    if energy_efficiency == "Energieffektiv (TEK10/TEK17)":
-        buildings_df['Standard'][0:len(buildings_df)] = "Y"
-    if energy_efficiency == "Passivhus":
-        buildings_df['Standard'][0:len(buildings_df)] = "Z"
-    
-    
-    df = pd.DataFrame(data={'ID' : buildings_df['ID'], 'Areal' : buildings_df['BRA'], 'Standard' : buildings_df['Standard'], 'Kategori' : buildings_df['Kategori']})
     
     selected_url = 'https://geo.ngu.no/mapserver/LosmasserWMS?request=GetCapabilities&service=WMS'
     selected_layer = 'Losmasse_flate'
@@ -146,6 +136,18 @@ def app(lat, long):
 
     folium.LayerControl().add_to(m)
     output = st_folium(m, width=700, height=600)
+
+    
+    energy_efficiency = st.selectbox("Velg energistandard for alle bygg", options=["Gammelt", "Energieffektiv (TEK10/TEK17)", "Passivhus"], index=1)
+    if energy_efficiency == "Gammelt":
+        buildings_df['Standard'][0:len(buildings_df)] = "X"
+    if energy_efficiency == "Energieffektiv (TEK10/TEK17)":
+        buildings_df['Standard'][0:len(buildings_df)] = "Y"
+    if energy_efficiency == "Passivhus":
+        buildings_df['Standard'][0:len(buildings_df)] = "Z"
+    
+    
+    df = pd.DataFrame(data={'ID' : buildings_df['ID'], 'Areal' : buildings_df['BRA'], 'Standard' : buildings_df['Standard'], 'Kategori' : buildings_df['Kategori']})
 
     # -- Beregne energibehov --
     st.info("Her kan du starte energiberegning for bygningsmassen.")
