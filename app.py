@@ -13,7 +13,7 @@ with c1:
     st.image(image)
 
 with c2:
-    st.title("Energy Plan Zero - Sluppen")
+    st.title("Energibehov - Bryn")
 
 
 #input_obj = input.Input()
