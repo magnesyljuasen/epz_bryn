@@ -96,24 +96,23 @@ def style_function(x):
 
 def app(lat, long):
     st.header("*1) Modell*")
-    with st.expander("Se 3D modell"):
-        uc = '\u00B2'
+    uc = '\u00B2'
+    #with st.expander("Se 3D modell"):
         
-        image = Image.open('src/data/Arealer.png')
-
-        st.image(image, caption=f'Bygninger og bruttoareal (m{uc}) fra modell')
+    #    image = Image.open('src/data/Arealer.png')
+    #    st.image(image, caption=f'Bygninger og bruttoareal (m{uc}) fra modell')
     
     #-- Kart --
-    m = show_map(center=[lat, long], zoom=16)
+    m = show_map(center=[lat, long], zoom=17)
     
-    buildings_gdf = geopandas.read_file('src/data/sluppen.zip')
+    buildings_gdf = geopandas.read_file('src/data/buildings.zip')
     buildings_df = buildings_gdf[['ID', 'BRA', 'Kategori', 'Standard']]
     #folium.GeoJson(data=buildings_gdf["geometry"]).add_to(m)
 
     feature = folium.features.GeoJson(buildings_gdf,
     name='Bygningsmasse',
     style_function=style_function,
-    tooltip=folium.GeoJsonTooltip(fields= ["ID", "BRA"],aliases=["ID: ", f"BTA (m{uc}): "],labels=True))
+    tooltip=folium.GeoJsonTooltip(fields= ["Navn", "ID", "BRA"],aliases=["Navn: ", "ID: ", f"BRA (m{uc}): "],labels=True))
     m.add_child(feature)
 
     #-- Energibehov fra tabell --
@@ -182,23 +181,23 @@ def app(lat, long):
         with st.expander("Samlet energibehov for alle bygg", expanded=True):
             visualize_demands(space_heating_arr_sum, dhw_arr_sum, electric_arr_sum, df, i, "energibehov_alle")
         
-        st.header("*3) Grunnvarme*")
-        if st.checkbox ("Beregn antall energibrønner for å dekke 90 % av det termiske energibehovet"):
-            geoenergy_obj = geoenergy.Geoenergy((space_heating_arr_sum + dhw_arr_sum), 8.5, 3.5, 3.0, 5, 90)
+        #st.header("*3) Grunnvarme*")
+        #if st.checkbox ("Beregn antall energibrønner for å dekke 90 % av det termiske energibehovet"):
+        #    geoenergy_obj = geoenergy.Geoenergy((space_heating_arr_sum + dhw_arr_sum), 8.5, 3.5, 3.0, 5, 90)
             
-            st.write(f"Levert energi fra brønner: {geoenergy_obj.energy_gshp_delivered_sum:,} kWh".replace(',', ' '))
-            st.write(f"Strøm til varmepumpe: {geoenergy_obj.energy_gshp_compressor_sum:,} kWh".replace(',', ' '))
-            st.write(f"Spisslast (dekkes ikke av grunnvarme): {geoenergy_obj.energy_gshp_peak_sum:,} kWh".replace(',', ' '))
+        #    st.write(f"Levert energi fra brønner: {geoenergy_obj.energy_gshp_delivered_sum:,} kWh".replace(',', ' '))
+        #    st.write(f"Strøm til varmepumpe: {geoenergy_obj.energy_gshp_compressor_sum:,} kWh".replace(',', ' '))
+        #    st.write(f"Spisslast (dekkes ikke av grunnvarme): {geoenergy_obj.energy_gshp_peak_sum:,} kWh".replace(',', ' '))
 
-            number_of_wells = int(geoenergy_obj.energy_gshp_delivered_sum / 75 / 300)
-            st.write(f"""Det trengs ca. {number_of_wells} brønner 
-            med 300 meters dybde og 15 m mellomrom for å dekke 90 % av det termiske energibehovet til alle bygningene. 
-            De resterende 10 % kalles spisslast og klarer ikke dekkes av energibrønner. 
+        #    number_of_wells = int(geoenergy_obj.energy_gshp_delivered_sum / 75 / 300)
+        #    st.write(f"""Det trengs ca. {number_of_wells} brønner 
+        #    med 300 meters dybde og 15 m mellomrom for å dekke 90 % av det termiske energibehovet til alle bygningene. 
+        #    De resterende 10 % kalles spisslast og klarer ikke dekkes av energibrønner. 
             
-            Energibrønner kan redusere termisk effekt med {int(max(geoenergy_obj.energy_arr) - geoenergy_obj.heat_pump_size)} kW. """)
+        #    Energibrønner kan redusere termisk effekt med {int(max(geoenergy_obj.energy_arr) - geoenergy_obj.heat_pump_size)} kW. """)
 
-            st.header("*4) Solenergi*")
-            st.caption("Kommer...")
+        #    st.header("*4) Solenergi*")
+        #    st.caption("Kommer...")
 
 
         

@@ -19,6 +19,6 @@ with c2:
 #input_obj = input.Input()
 
 #EPZ.app(input_obj.lat, input_obj.long)
-EPZ.app(63.398337, 10.399633)
+EPZ.app(59.910155, 10.811134)
 
 
