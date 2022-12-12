@@ -97,16 +97,30 @@ def style_function(x):
 def app(lat, long):
     st.header("*1) Modell*")
     uc = '\u00B2'
-    #with st.expander("Se 3D modell"):
-        
-    #    image = Image.open('src/data/Arealer.png')
-    #    st.image(image, caption=f'Bygninger og bruttoareal (m{uc}) fra modell')
+    with st.expander("Se 3D modell"):
+        image = Image.open('src/data/Arealer.png')
+        st.image(image, caption=f'Bygninger fra modell')
     
     #-- Kart --
     m = show_map(center=[lat, long], zoom=17)
     
     buildings_gdf = geopandas.read_file('src/data/buildings.zip')
     buildings_df = buildings_gdf[['ID', 'BRA', 'Kategori', 'Standard']]
+
+    with st.expander("Se arealer"):
+        scaled = st.number_input("Velg skaleringsfaktor for å skalere alle arealer", min_value=1.0, value=1.0, step=0.1)
+        st.markdown("Endre areal per bygg..")
+        selected_building = st.selectbox("Bygnings-ID", options=buildings_df["ID"].to_numpy())
+        selected_area = st.number_input("Nytt areal", value = buildings_df["BRA"][selected_building], step = 1000)
+        buildings_df["BRA"][selected_building] = selected_area
+        buildings_gdf["BRA"][selected_building] = selected_area
+        for i in range(0, len(buildings_df["BRA"])):
+            buildings_df["BRA"][i] = int(buildings_df["BRA"][i]/scaled)
+            buildings_gdf["BRA"][i] = int(buildings_gdf["BRA"][i]/scaled)
+        st.dataframe(buildings_df)
+        
+        sum_area = int(sum(buildings_df["BRA"]))
+        st.write(f"**Totalt bruttoareal {sum_area:,} m2**".replace(',', ' '))
     #folium.GeoJson(data=buildings_gdf["geometry"]).add_to(m)
 
     feature = folium.features.GeoJson(buildings_gdf,
@@ -136,14 +150,20 @@ def app(lat, long):
     folium.LayerControl().add_to(m)
     output = st_folium(m, width=700, height=600)
 
-    
-    energy_efficiency = st.selectbox("Velg energistandard for alle bygg", options=["Gammelt", "Energieffektiv (TEK10/TEK17)", "Passivhus"], index=1)
+    energy_efficiency = st.selectbox("Velg energistandard for alle bygg", options=["Gammelt", "Energieffektiv (TEK10/TEK17)", "Passivhus", "Passivhus++"], index=1)
     if energy_efficiency == "Gammelt":
         buildings_df['Standard'][0:len(buildings_df)] = "X"
+        factor = 1
     if energy_efficiency == "Energieffektiv (TEK10/TEK17)":
         buildings_df['Standard'][0:len(buildings_df)] = "Y"
+        factor = 1
     if energy_efficiency == "Passivhus":
         buildings_df['Standard'][0:len(buildings_df)] = "Z"
+        factor = 1
+    if energy_efficiency == "Passivhus++":
+        buildings_df['Standard'][0:len(buildings_df)] = "Z"
+        st.write("Det finnes ingen kategori som er bedre enn passivhus i PROFet så her er passivhus++ = passivhus-timeseriene/skaleringsfaktor")
+        factor = st.number_input("Skaleringsfaktor", min_value = 1.0, value = 1.1, step = 0.1)
     
     
     df = pd.DataFrame(data={'ID' : buildings_df['ID'], 'Areal' : buildings_df['BRA'], 'Standard' : buildings_df['Standard'], 'Kategori' : buildings_df['Kategori']})
@@ -160,17 +180,16 @@ def app(lat, long):
         dhw_arr_sum = 0
         electric_arr_sum = 0
         for i in range(0, len(df)):
-            area = df['Areal'][i]
-            standard = df['Standard'][i]
-            category = df['Kategori'][i]
-
-            building = Energibehov()
-            electric_arr = building.hent_profil(category, standard, '1', area)
-            dhw_arr = building.hent_profil(category, standard, '2', area)                
-            space_heating_arr = building.hent_profil(category, standard, '3', area)
-
             with st.sidebar:
                 with st.expander(f"Bygning ID: {df['ID'][i]}"):
+                    area = df['Areal'][i]
+                    standard = df['Standard'][i]
+                    category = df['Kategori'][i]
+
+                    building = Energibehov()
+                    electric_arr = building.hent_profil(category, standard, '1', area) / factor
+                    dhw_arr = building.hent_profil(category, standard, '2', area) / factor                
+                    space_heating_arr = building.hent_profil(category, standard, '3', area) / factor
                     visualize_demands(space_heating_arr, dhw_arr, electric_arr, df, i, "energibehov")
 
             space_heating_arr_sum += space_heating_arr
